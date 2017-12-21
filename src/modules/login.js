@@ -41,3 +41,8 @@ export const login = (user, password) => {
 
     }
 }
+
+export function getActiveUser(state) {
+    console.log(state);
+    return state.login.activeUser;
+}

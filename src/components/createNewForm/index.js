@@ -10,10 +10,13 @@ import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
+import combineDateTime from '../../utils';
+import {getActiveUser} from '../../modules/login';
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import data from '../../data';
+import axios from "axios/index";
 
-/**
- * A contrived example using a transition between steps
- */
 class CreateNewForm extends React.Component {
 
     constructor(props) {
@@ -22,6 +25,15 @@ class CreateNewForm extends React.Component {
             loading: false,
             finished: false,
             stepIndex: 0,
+            activity: {
+                name: '',
+                recommendation_reason: '',
+                category: '',
+                description: '',
+                date: null,
+                time: null,
+                imageFile: null
+            }
         }
     }
 
@@ -34,17 +46,12 @@ class CreateNewForm extends React.Component {
     handleNext = () => {
         const {stepIndex} = this.state;
         if (!this.state.loading) {
-            if (stepIndex === 2) {
-                this.props.enableSubmit(true);
-            }
             this.dummyAsync(() => this.setState({
                 loading: false,
                 stepIndex: stepIndex + 1,
-                finished: stepIndex >= 2,
+                finished: stepIndex >= 3,
             }));
         }
-
-
     };
 
     handlePrev = () => {
@@ -52,6 +59,7 @@ class CreateNewForm extends React.Component {
         if (!this.state.loading) {
             this.dummyAsync(() => this.setState({
                 loading: false,
+                finished: false,
                 stepIndex: stepIndex - 1,
             }));
         }
@@ -61,26 +69,100 @@ class CreateNewForm extends React.Component {
         return date.getDay() > 0 && date.getDay() < 6;
     }
 
+    handleTextChange = (event) => {
+        this.setState({
+            activity: {
+                ...this.state.activity,
+                [event.target.id]: event.target.value
+            }
+        });
+    }
+
+    handleDateChange = (event, value) => {
+        this.setState({
+            activity: {
+                ...this.state.activity,
+                date: value
+            }
+        })
+    }
+
+    handleTimeChange = (event, value) => {
+        this.setState({
+            activity: {
+                ...this.state.activity,
+                time: value
+            }
+        })
+    }
+
+    handleImageChange = (event) => {
+        this.setState({
+            activity: {
+                ...this.state.activity,
+                imageFile: event.target.files[0]
+            }
+        })
+    }
+
+    handleSubmit= () => {
+        const {activity} = this.state;
+        const date = combineDateTime(activity.date, activity.time);
+        axios.post(`${data.URL}/${data.APP_ID}/${data.API_KEY}/data/activities`, {
+            'recommendation_reason': activity.recommendation_reason,
+            'category': activity.category,
+            'name': activity.name,
+            'description': activity.description,
+            'nextPossibleDate': date
+        })
+            .then(response => {
+                console.log('done');
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+
     getStepContent(stepIndex) {
         const inputStyle = {
             margin: 0,
             display: 'block'
         }
+        const styles = {
+            uploadButton: {
+                verticalAlign: 'middle',
+            },
+            uploadInput: {
+                cursor: 'pointer',
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100%',
+                opacity: 0,
+            },
+        };
         switch (stepIndex) {
             case 0:
                 return (
                     <div>
                         <TextField
+                            id='name'
                             style={inputStyle}
-                            floatingLabelText="What is the title of your adventure?"
+                            floatingLabelText="What is the title of your activity?"
                             fullWidth={true}
+                            onChange={this.handleTextChange}
                         />
                         <br/>
                         <TextField
+                            id='recommendation_reason'
                             style={inputStyle}
-                            floatingLabelText="What category would you say it is?"
-                            hintText="Movies, Hiking, Climbing, Boating, etc"
+                            floatingLabelText="What would you recommend it?"
                             fullWidth={true}
+                            onChange={this.handleTextChange}
                         />
                     </div>
                 );
@@ -88,27 +170,54 @@ class CreateNewForm extends React.Component {
                 return (
                     <div>
                         <TextField
+                            id='category'
                             style={inputStyle}
-                            floatingLabelText="Why would you like to go there?"
+                            floatingLabelText="What category would you say it is?"
+                            hintText="Movies, Hiking, Boating, etc"
+                            fullWidth={true}
+                            onChange={this.handleTextChange}
+                        />
+                        <TextField
+                            id='description'
+                            style={inputStyle}
+                            floatingLabelText="Short description please?"
                             multiLine={true}
                             rows={4}
                             fullWidth={true}
+                            onChange={this.handleTextChange}
                         />
                     </div>
                 );
             case 2:
+                const today = new Date();
                 return (
                     <div>
                        <DatePicker
+                           id='date'
                            shouldDisableDate={this.disableWeekDays}
+                           minDate={today}
                            hintText="Let's decide on a date..."
+                           onChange={this.handleDateChange}
                        />
                         <br/>
                         <TimePicker
+                            id='time'
                             format="24hr"
                             hintText="... and time"
+                            onChange={this.handleTimeChange}
                         />
                     </div>
+                );
+            case 3:
+                return(
+                    <FlatButton
+                        label="Choose an Image"
+                        style={styles.uploadButton}
+                        labelPosition="before"
+                        containerElement="label"
+                    >
+                        <input type="file" id="imageFile" style={styles.uploadInput} onChange={this.handleImageChange}/>
+                    </FlatButton>
                 );
             default:
                 return 'Something went wrong...';
@@ -123,7 +232,18 @@ class CreateNewForm extends React.Component {
             return (
                 <div style={contentStyle}>
                     <p>Great!</p>
-                    <p>You can now either <strong>submit</strong> or <strong>cancel</strong> your adventure.</p>
+                    <p>You can now either <strong>review and edit</strong>, <strong>submit</strong> or <strong>cancel</strong> your activity.</p>
+                    <FlatButton
+                        label="Back"
+                        disabled={stepIndex === 0}
+                        onClick={this.handlePrev}
+                        style={{marginRight: 12}}
+                    />
+                    <RaisedButton
+                        label='Submit'
+                        primary={true}
+                        onClick={this.handleSubmit}
+                    />
                 </div>
             );
         }
@@ -139,7 +259,7 @@ class CreateNewForm extends React.Component {
                         style={{marginRight: 12}}
                     />
                     <RaisedButton
-                        label={stepIndex === 2 ? 'Finish' : 'Next'}
+                        label={stepIndex === 3 ? 'Finish' : 'Next'}
                         primary={true}
                         onClick={this.handleNext}
                     />
@@ -155,13 +275,16 @@ class CreateNewForm extends React.Component {
             <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
                 <Stepper activeStep={stepIndex}>
                     <Step>
-                        <StepLabel>Title and Category</StepLabel>
+                        <StepLabel>Title and Recommendation</StepLabel>
                     </Step>
                     <Step>
-                        <StepLabel>Description</StepLabel>
+                        <StepLabel>Category and Description</StepLabel>
                     </Step>
                     <Step>
                         <StepLabel>Date and Time</StepLabel>
+                    </Step>
+                    <Step>
+                        <StepLabel>Image</StepLabel>
                     </Step>
                 </Stepper>
                 <ExpandTransition loading={loading} open={true}>
@@ -172,4 +295,15 @@ class CreateNewForm extends React.Component {
     }
 }
 
-export default CreateNewForm;
+const mapDispatchToProps = dispatch => bindActionCreators({
+    getActiveUser
+}, dispatch)
+
+const mapStateToProps = state => ({
+    activeUser: getActiveUser(state)
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CreateNewForm)

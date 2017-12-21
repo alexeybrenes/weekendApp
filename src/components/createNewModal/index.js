@@ -8,8 +8,7 @@ export default class CreateNewModal extends React.Component {
     constructor({show}) {
         super();
         this.state = {
-            open: show,
-            submitDisabled: true
+            open: show
         }
     }
 
@@ -18,25 +17,13 @@ export default class CreateNewModal extends React.Component {
         this.props.handleVisibility(false)
     };
 
-    handleEnableSubmit = (newState) => {
-        this.setState({
-            submitDisabled: newState
-        })
-    }
-
     render() {
         const actions = [
             <FlatButton
                 label="Cancel"
                 primary={true}
                 onClick={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                disabled={this.state.submitDisabled}
-                onClick={this.handleClose}
-            />,
+            />
         ];
 
         return (
@@ -48,7 +35,7 @@ export default class CreateNewModal extends React.Component {
                     autoScrollBodyContent={true}
                     open={this.props.show}
                 >
-                    <CreateNewForm enableSubmit={(newState) => this.handleEnableSubmit(!newState)}/>
+                    <CreateNewForm/>
                 </Dialog>
             </div>
         );

@@ -1,4 +1,4 @@
-export default function combineDateTime(date, time) {
+export function combineDateTime(date, time) {
     const datetime = new Date(
         date.getFullYear(),
         date.getMonth(),

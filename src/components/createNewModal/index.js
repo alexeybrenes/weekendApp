@@ -35,7 +35,10 @@ export default class CreateNewModal extends React.Component {
                     autoScrollBodyContent={true}
                     open={this.props.show}
                 >
-                    <CreateNewForm/>
+                    <CreateNewForm
+                        onRequestClose={() => this.handleClose()}
+                        requestOpenSnackbar={(message) => this.props.requestOpenSnackbar(message)}
+                    />
                 </Dialog>
             </div>
         );

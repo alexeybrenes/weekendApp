@@ -1,11 +1,13 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {login} from '../../modules/login';
+import {login} from '../../redux'
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import { CSSTransitionGroup } from 'react-transition-group'
+import './home.css';
 
 class Home extends React.Component {
 
@@ -16,6 +18,10 @@ class Home extends React.Component {
             user: '',
             password: ''
         };
+    }
+
+    componentDidMount() {
+        document.body.classList.add('home');
     }
 
     handleTextChange = event => {
@@ -42,6 +48,15 @@ class Home extends React.Component {
           display: 'block'
         };
         return (
+            <CSSTransitionGroup
+                transitionName="initial"
+                transitionAppear={true}
+                transitionAppearTimeout={1000}
+                transitionEnter={true}
+                transitionEnterTimeout={1000}
+                transitionLeave={true}
+                transitionLeaveTimeout={1000}
+            >
             <div>
                 <AppBar title="Activity Calendar" showMenuIconButton={false}/>
                 <Paper style={style} zDepth={3}>
@@ -62,6 +77,7 @@ class Home extends React.Component {
                     <RaisedButton label="Log In" primary={true} style={buttonStyle} onClick={() => this.props.login(this.state.user, this.state.password)}/>
                 </Paper>
             </div>
+            </CSSTransitionGroup>
         );
     }
 }

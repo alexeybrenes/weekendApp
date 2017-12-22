@@ -6,15 +6,25 @@ import { ConnectedRouter } from 'react-router-redux'
 import store, { history } from './store'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './containers/app'
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import './index.css'
 
 const target = document.querySelector('#root');
 
+const muiTheme = getMuiTheme({
+    palette: {
+
+    },
+    appBar: {
+        padding: 20
+    },
+});
+
 render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <MuiThemeProvider>
+            <MuiThemeProvider  muiTheme={muiTheme}>
                 <div>
                     <App />
                 </div>

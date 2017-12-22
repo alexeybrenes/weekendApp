@@ -10,12 +10,11 @@ import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
-import combineDateTime from '../../utils';
-import {getActiveUser} from '../../modules/login';
+import {combineDateTime} from '../../utils';
+import {getActiveUser} from '../../redux';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import data from '../../data';
-import axios from "axios/index";
+import {createActivity} from '../../redux';
 
 class CreateNewForm extends React.Component {
 
@@ -30,9 +29,9 @@ class CreateNewForm extends React.Component {
                 recommendation_reason: '',
                 category: '',
                 description: '',
-                date: null,
-                time: null,
-                imageFile: null
+                date: '',
+                time: '',
+                imageUrl: ''
             }
         }
     }
@@ -108,20 +107,9 @@ class CreateNewForm extends React.Component {
     handleSubmit= () => {
         const {activity} = this.state;
         const date = combineDateTime(activity.date, activity.time);
-        axios.post(`${data.URL}/${data.APP_ID}/${data.API_KEY}/data/activities`, {
-            'recommendation_reason': activity.recommendation_reason,
-            'category': activity.category,
-            'name': activity.name,
-            'description': activity.description,
-            'nextPossibleDate': date
-        })
-            .then(response => {
-                console.log('done');
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        this.props.createActivity(activity, date);
+        this.props.onRequestClose();
+        this.props.requestOpenSnackbar('Activity Created');
 
     }
 
@@ -130,21 +118,6 @@ class CreateNewForm extends React.Component {
             margin: 0,
             display: 'block'
         }
-        const styles = {
-            uploadButton: {
-                verticalAlign: 'middle',
-            },
-            uploadInput: {
-                cursor: 'pointer',
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                right: 0,
-                left: 0,
-                width: '100%',
-                opacity: 0,
-            },
-        };
         switch (stepIndex) {
             case 0:
                 return (
@@ -210,14 +183,14 @@ class CreateNewForm extends React.Component {
                 );
             case 3:
                 return(
-                    <FlatButton
-                        label="Choose an Image"
-                        style={styles.uploadButton}
-                        labelPosition="before"
-                        containerElement="label"
-                    >
-                        <input type="file" id="imageFile" style={styles.uploadInput} onChange={this.handleImageChange}/>
-                    </FlatButton>
+                    <TextField
+                        id='imageUrl'
+                        style={inputStyle}
+                        floatingLabelText="Add an image url"
+                        hintText="http://image.jpg"
+                        fullWidth={true}
+                        onChange={this.handleTextChange}
+                    />
                 );
             default:
                 return 'Something went wrong...';
@@ -296,7 +269,8 @@ class CreateNewForm extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    getActiveUser
+    getActiveUser,
+    createActivity
 }, dispatch)
 
 const mapStateToProps = state => ({

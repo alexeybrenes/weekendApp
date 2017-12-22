@@ -1,0 +1,21 @@
+body.main {
+    background-image: url(http://www.publicdomainpictures.net/pictures/190000/velka/travel-background-1469437434zWf.jpg) ;
+}
+
+.initial-appear {
+    opacity: 0.01;
+}
+
+.initial-appear.initial-appear-active {
+    opacity: 1;
+    transition: opacity 1s ease-in;
+}
+
+.initial-leave {
+    opacity: 1;
+}
+
+.initial-leave.initial-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}

@@ -149,7 +149,7 @@ class Main extends React.Component {
                     <AppBar
                         title={`${greeting}, ${activeUser}?`}
                         titleStyle={{width: '90%', display: 'block', flex: 'none'}}
-                        style={{flexWrap: 'wrap', justifyContent: 'center'}}
+                        style={{flexWrap: 'wrap', justifyContent: 'center', background: 'rgba(33, 150, 243, 0.3)'}}
                         showMenuIconButton={false}
                         iconElementRight={<FlatButton label="LogOut"/>}
                     >
@@ -168,7 +168,7 @@ class Main extends React.Component {
                                 searchText={this.state.searchTerm}
                                 fullWidth={true}
                                 style={{
-                                    background: 'azure',
+                                    background: 'rgba(255, 255, 255, 0.7)',
                                     border: '1px solid #000',
                                     borderRadius: 10,
                                     height: '100%'

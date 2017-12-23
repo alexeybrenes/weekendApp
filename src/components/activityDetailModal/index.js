@@ -20,11 +20,12 @@ export default class ActivityDetailModal extends React.Component {
         return(
             <div>
                 <Dialog
-                    title={activity ? activity.name : 'Activity detail'}
+                    // title={activity ? activity.name : 'Activity detail'}
                     autoScrollBodyContent={true}
                     open={this.props.show}
                     modal={false}
                     onRequestClose={this.handleClose}
+                    bodyStyle={{backgroundColor: '#151922', borderColor: '#151922'}}
                 >
                     <ActivityDetailCard
                         activity={activity}

@@ -5,7 +5,6 @@ import CreateNewModal from '../../components/createNewModal';
 import ActivityDetailModal from '../../components/activityDetailModal';
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import AppBar from 'material-ui/AppBar';
 import Search from 'material-ui/svg-icons/action/search';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import {getActiveUser, fetchActivityData, getGridData} from '../../redux';
@@ -109,17 +108,18 @@ class Main extends React.Component {
             root: {
                 display: 'flex',
                 flexWrap: 'wrap',
+                alignItems: 'center',
                 justifyContent: 'center',
+                height: '100%'
             },
             gridList: {
                 overflowY: 'auto',
                 padding: 20,
                 margin: 0,
-                width: '100%',
-                height: '100%'
+                width: '100%'
             },
             gridTile: {
-                border: '4px solid #37474F',
+                border: '1px solid #37474F',
                 borderRadius: 3,
                 boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.25)',
                 background: '#263238'
@@ -153,12 +153,14 @@ class Main extends React.Component {
 
                             <GridList
                                 cols={3}
+                                cellHeight={180}
                                 style={styles.gridList}
                                 padding={5}
-                                className="gridlist"
+                                className="gridList"
                             >
                                 {filteredGridData.map((tile) => (
                                     <GridTile
+                                        className='gridTile'
                                         style={styles.gridTile}
                                         key={tile.objectId}
                                         title={tile.name}

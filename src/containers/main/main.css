@@ -28,9 +28,6 @@ body.main {
     right: 40%;
     background: #151922;
     padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
 }
 

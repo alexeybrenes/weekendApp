@@ -19,6 +19,10 @@ const muiTheme = getMuiTheme({
     appBar: {
         padding: 20
     },
+    textField: {
+        hintColor: '#3A3F45',
+        floatingLabelColor: '#3A3F45'
+    }
 });
 
 render(

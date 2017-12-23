@@ -2,8 +2,6 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {login} from '../../redux'
-import AppBar from 'material-ui/AppBar';
-import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -20,9 +18,7 @@ class Home extends React.Component {
         };
     }
 
-    componentDidMount() {
-        document.body.classList.add('home');
-    }
+    componentDidMount() {}
 
     handleTextChange = event => {
         this.setState({
@@ -31,22 +27,22 @@ class Home extends React.Component {
     }
 
     render() {
-        const style = {
-            height: 300,
-            width: 500,
-            margin: 'auto',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            textAlign: 'center',
-            display: 'inline-block',
-        };
-        const buttonStyle = {
-          margin: 20,
-          display: 'block'
-        };
+
+        const styles = {
+            textField: {
+                focusedUnderline: {
+                    borderBottom: '1px solid #3A3F45'
+                },
+                floatingLabelFocusStyle: {
+                    color: '#BFC0C4'
+                }
+            },
+            raisedButton: {
+                display: 'block',
+                marginTop: '20px'
+            }
+
+        }
         return (
             <CSSTransitionGroup
                 transitionName="initial"
@@ -57,25 +53,44 @@ class Home extends React.Component {
                 transitionLeave={true}
                 transitionLeaveTimeout={1000}
             >
-            <div>
-                <AppBar title="Activity Calendar" showMenuIconButton={false}/>
-                <Paper style={style} zDepth={3}>
-                    <AppBar title="Please log in" showMenuIconButton={false}/>
-                    <TextField
-                        id="user"
-                        hintText="yourname@email.com"
-                        floatingLabelText="Username"
-                        onChange={this.handleTextChange}
-                    />
-                    <TextField
-                        id="password"
-                        hintText="Your super secret password"
-                        floatingLabelText="Password"
-                        onChange={this.handleTextChange}
-                        type="password"
-                    />
-                    <RaisedButton label="Log In" primary={true} style={buttonStyle} onClick={() => this.props.login(this.state.user, this.state.password)}/>
-                </Paper>
+            <div className='home'>
+                <section className='home_inner home_information column'>
+                    <h1>WELCOME</h1>
+                    <p className='home_information-text'>LET'S DO SOMETHING FUN</p>
+                </section>
+                <section className='home_inner home_login column'>
+                    <div className='home_login_form'>
+                        <div className='login_form_container'>
+                            <h1>Please Log In</h1>
+                            <TextField
+                                id="user"
+                                hintText="yourname@email.com"
+                                floatingLabelText="Username"
+                                onChange={this.handleTextChange}
+                                underlineFocusStyle={styles.textField.focusedUnderline}
+                                floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
+                            />
+                            <br/>
+                            <TextField
+                                id="password"
+                                hintText="Your super secret password"
+                                floatingLabelText="Password"
+                                onChange={this.handleTextChange}
+                                type="password"
+                                underlineFocusStyle={styles.textField.focusedUnderline}
+                                floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
+                            />
+                            <RaisedButton
+                                label="Log In"
+                                primary={true}
+                                onClick={() => this.props.login(this.state.user, this.state.password)}
+                                style={styles.raisedButton}
+                                buttonStyle={{background: '#151922'}}
+                            />
+                        </div>
+
+                    </div>
+                </section>
             </div>
             </CSSTransitionGroup>
         );

@@ -1,5 +1,5 @@
 body.main {
-    background-image: url(https://static.pexels.com/photos/480165/pexels-photo-480165.png) ;
+    background: #151922;
 }
 
 .initial-appear {
@@ -18,4 +18,40 @@ body.main {
 .initial-leave.initial-leave-active {
     opacity: 0.01;
     transition: opacity 300ms ease-in;
+}
+
+.main-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 40%;
+    background: #151922;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.main-right {
+    position: fixed;
+    top: 0;
+    left: 60%;
+    bottom: 0;
+    right: 0;
+    background: #00A875;
+    padding: 20px;
+}
+
+.main-right-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.main-right-container h1 {
+    color: #BFC0C4;
+    font-size: 2em;
 }

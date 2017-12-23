@@ -6,7 +6,6 @@ import ActivityDetailModal from '../../components/activityDetailModal';
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import AppBar from 'material-ui/AppBar';
-import Subheader from 'material-ui/Subheader';
 import Search from 'material-ui/svg-icons/action/search';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import {getActiveUser, fetchActivityData, getGridData} from '../../redux';
@@ -110,16 +109,20 @@ class Main extends React.Component {
             root: {
                 display: 'flex',
                 flexWrap: 'wrap',
-                justifyContent: 'space-around',
+                justifyContent: 'center',
             },
             gridList: {
                 overflowY: 'auto',
                 padding: 20,
-                margin: 0
+                margin: 0,
+                width: '100%',
+                height: '100%'
             },
             gridTile: {
+                border: '4px solid #37474F',
                 borderRadius: 3,
-                boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.25)'
+                boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.25)',
+                background: '#263238'
             },
             card: {
                 width: 500,
@@ -145,100 +148,98 @@ class Main extends React.Component {
                 transitionLeaveTimeout={1000}
             >
                 <div>
+                    <section className='main-left'>
+                        <div style={styles.root}>
 
-                    <AppBar
-                        title={`${greeting}, ${activeUser}?`}
-                        titleStyle={{width: '90%', display: 'block', flex: 'none'}}
-                        style={{flexWrap: 'wrap', justifyContent: 'center', background: 'rgba(33, 150, 243, 0.3)'}}
-                        showMenuIconButton={false}
-                        iconElementRight={<FlatButton label="LogOut"/>}
-                    >
-                        <div style={{
-                            position: 'relative',
-                            flex: "1 1 75%",
-                            alignSelf: 'center',
-                            height: 40,
-                            margin: 10
-                        }}>
-                            <Search style={{position: 'absolute', left: 0, top: 1, width: 35, height: 35, zIndex: 1}}/>
-                            <AutoComplete
-                                hintText="Search for something exciting"
-                                dataSource={autocompleteData}
-                                filter={AutoComplete.caseInsensitiveFilter}
-                                searchText={this.state.searchTerm}
-                                fullWidth={true}
-                                style={{
-                                    background: 'rgba(255, 255, 255, 0.7)',
-                                    border: '1px solid #000',
-                                    borderRadius: 10,
-                                    height: '100%'
-                                }}
-                                textFieldStyle={{textIndent: 40, height: '100%', fontSize: 'x-large'}}
-                                hintStyle={{fontSize: 'large', bottom: 7}}
-                                inputStyle={{marginTop: 0}}
-                                underlineShow={false}
-                                onUpdateInput={this.handleUpdateSearch}
-                            />
-                        </div>
-
-                        <RaisedButton
-                            label="Create your own"
-                            onClick={() => this.onCreateNewModalChanged(true)}
-                            icon={<AddCircleOutline/>}
-                            labelPosition="before"
-                            style={{flex: '0 1 190px', alignSelf: 'center', marginLeft: 15, width: 190}}
-                        />
-                    </AppBar>
-
-                    <Subheader style={{
-                        textAlign: 'left',
-                        background: 'rgba(0,0,0,0.25)',
-                        fontSize: 'x-large',
-                        color: 'white',
-                        boxShadow: '2px 2px 5px #000'
-                    }}>Upcoming activities:</Subheader>
-
-                    <GridList
-                        cols={5}
-                        cellHeight={180}
-                        style={styles.gridList}
-                        padding={5}
-                        className="gridlist"
-                    >
-                        {filteredGridData.map((tile) => (
-                            <GridTile
-                                style={styles.gridTile}
-                                key={tile.objectId}
-                                title={tile.name}
-                                subtitle={
-                                    <span>
-                                            {new Date(tile.nextPossibleDate).toDateString()}
-                                        <br/>
-                                        {new Date(tile.nextPossibleDate).toTimeString()}
-                                        </span>
-                                }
-                                titlePosition="bottom"
-                                titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-                                actionIcon={
-                                    <IconButton
-                                        tooltip="Details"
-                                        tooltipPosition="top-left"
-                                        touch={true}
-                                        onClick={() => this.showActivityDetailModal(true, tile)}
-                                    >
-                                        <ZoomOutMap color="white"/>
-                                    </IconButton>
-                                }
-                                actionPosition='right'
+                            <GridList
+                                cols={3}
+                                style={styles.gridList}
+                                padding={5}
+                                className="gridlist"
                             >
-                                <img
-                                    src={tile.imageUrl}
-                                    alt={tile.name}
+                                {filteredGridData.map((tile) => (
+                                    <GridTile
+                                        style={styles.gridTile}
+                                        key={tile.objectId}
+                                        title={tile.name}
+                                        subtitle={
+                                            <span>
+                                        {new Date(tile.nextPossibleDate).toDateString()}
+                                                <br/>
+                                                {new Date(tile.nextPossibleDate).toTimeString()}
+                                        </span>
+                                        }
+                                        titlePosition="bottom"
+                                        titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+                                        actionIcon={
+                                            <IconButton
+                                                tooltip="Details"
+                                                tooltipPosition="top-left"
+                                                touch={true}
+                                                onClick={() => this.showActivityDetailModal(true, tile)}
+                                            >
+                                                <ZoomOutMap color="white"/>
+                                            </IconButton>
+                                        }
+                                        actionPosition='right'
+                                    >
+                                        <img
+                                            src={tile.imageUrl}
+                                            alt={tile.name}
+                                            style={{filter: 'sepia(50%)'}}
 
-                                />
-                            </GridTile>
-                        ))}
-                    </GridList>
+                                        />
+                                    </GridTile>
+                                ))}
+                            </GridList>
+                        </div>
+                    </section>
+                    <section className='main-right'>
+                        <div className='main-right-container'>
+                            <div style={{textAlign: 'center'}}>
+                                <h1>{`${greeting}, ${activeUser}?`}</h1>
+                                    <div style={{
+                                        position: 'relative',
+                                        height: 40,
+                                        margin: 10
+                                    }}>
+                                        <Search style={{position: 'absolute', left: 0, top: 4, width: 35, height: 35, zIndex: 1}}/>
+                                        <AutoComplete
+                                            hintText="Search for something exciting"
+                                            dataSource={autocompleteData}
+                                            filter={AutoComplete.caseInsensitiveFilter}
+                                            searchText={this.state.searchTerm}
+                                            fullWidth={true}
+                                            style={{
+                                                background: 'rgba(255, 255, 255, 0.7)',
+                                                border: '1px solid #000',
+                                                borderRadius: 10,
+                                                height: '100%'
+                                            }}
+                                            textFieldStyle={{textIndent: 40, height: '100%', fontSize: 'x-large'}}
+                                            hintStyle={{fontSize: 'large', bottom: 7}}
+                                            inputStyle={{marginTop: 0}}
+                                            underlineShow={false}
+                                            onUpdateInput={this.handleUpdateSearch}
+                                        />
+                                    </div>
+                                    <RaisedButton
+                                        label="Create your own"
+                                        onClick={() => this.onCreateNewModalChanged(true)}
+                                        icon={<AddCircleOutline/>}
+                                        labelPosition="before"
+                                        style={{marginTop: 30, width: 190}}
+                                        buttonStyle={{background: '#151922'}}
+                                        primary={true}
+                                    />
+                            </div>
+                        </div>
+                        <FlatButton
+                            label='LOG OUT'
+                            style={{float: 'right', bottom: 30}}
+                        />
+                    </section>
+
                     <CreateNewModal
                         show={this.state.showCreateNewModal}
                         handleVisibility={(newState) => this.onCreateNewModalChanged(newState)}

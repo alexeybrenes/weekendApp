@@ -1,6 +1,4 @@
-body.home {
-    background-image: url(http://www.publicdomainpictures.net/pictures/190000/velka/travel-background-14694385127ql.jpg);
-}
+
 .initial-appear {
     opacity: 0.01;
 }
@@ -17,4 +15,65 @@ body.home {
 .initial-leave.initial-leave-active {
     opacity: 0.01;
     transition: opacity 300ms ease-in;
+}
+
+.home {
+}
+
+.home .column {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.home .home_information {
+    background: #151922;
+    flex: 1 1 70%;
+    right: 40%;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.home_information h1 {
+    color: #BFC0C4;
+    font-size: 5em;
+    margin: 5px;
+}
+
+.home_information p {
+    color: #3A3F45;
+    font-size: 2em;
+    margin: 20px;
+}
+
+.home .home_login {
+    background: #00A875;
+    flex: 1 1 30%;
+    left: 60%;
+    padding: 20px;
+}
+
+.home_login h1 {
+    color: #BFC0C4;
+    font-size: 3em;
+}
+
+.home_login_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+@media screen and (max-width: 425px) {
+    .home .home_inner.column {
+        position: relative;
+        right: 0;
+        left: 0;
+    }
 }

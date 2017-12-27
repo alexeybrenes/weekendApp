@@ -7,7 +7,8 @@ import {push} from "react-router-redux";
 
 //Constants
 const
-    LOGIN = 'LOGIN',
+    LOGIN_SUCCESS = 'LOGIN_SUCCESS',
+    LOGIN_FAILURE = 'LOGIN_FAILURE',
     FETCH_ACTIVITY_DATA_SUCCESS = 'FETCH_ACTIVITY_DATA_SUCCESS',
     DELETE_ACTIVITY_SUCCESS = 'DELETE_ACTIVITY_SUCCESS',
     UPDATE_ACTIVITY_SUCCESS = 'UPDATE_ACTIVITY_SUCCESS',
@@ -27,14 +28,19 @@ export const login = (user, password) => {
                 "password": password
             })
                 .then(function (response) {
+                    console.log(response);
                     dispatch({
-                        type: LOGIN,
+                        type: LOGIN_SUCCESS,
                         activeUser: response.data.name
                     })
                     dispatch(push('/main'));
                 })
                 .catch(function (error) {
                     console.log(error);
+                    dispatch({
+                        type: LOGIN_FAILURE,
+                        error: error.response.data.message
+                    })
                 })
         )
 
@@ -64,7 +70,7 @@ export const createActivity = (activity, date) => {
             'name': activity.name,
             'description': activity.description,
             'nextPossibleDate': date,
-            'imageUrl': activity.imageUrl
+            'imageUrl': activity.imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/1024px-No_image_3x4.svg.png'
         })
             .then(response => {
                 dispatch({
@@ -121,10 +127,18 @@ export const updateActivity = (activity, date, objectId) => {
 
 export const reducers = (state = initialState, action) => {
     switch (action.type) {
-        case LOGIN:
+        case LOGIN_SUCCESS:
             return {
                 ...state,
-                activeUser: action.activeUser
+                activeUser: action.activeUser,
+                error: false,
+                errorMessage: ''
+            }
+        case LOGIN_FAILURE:
+            return {
+                ...state,
+                error: true,
+                errorMessage: action.error
             }
         case FETCH_ACTIVITY_DATA_SUCCESS:
             return {

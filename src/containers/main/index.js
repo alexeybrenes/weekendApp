@@ -185,12 +185,14 @@ class Main extends React.Component {
                                         }
                                         actionPosition='right'
                                     >
+                                        {tile.imageUrl &&
                                         <img
                                             src={tile.imageUrl}
                                             alt={tile.name}
                                             style={{filter: 'sepia(50%)'}}
 
                                         />
+                                        }
                                     </GridTile>
                                 ))}
                             </GridList>

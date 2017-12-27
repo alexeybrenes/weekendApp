@@ -2,10 +2,37 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {login} from '../../redux'
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { CSSTransitionGroup } from 'react-transition-group'
+import { ValidatorForm } from 'react-form-validator-core';
+import { TextValidator} from 'react-material-ui-form-validator';
+import Snackbar from 'material-ui/Snackbar';
 import './home.css';
+import * as colors from 'material-ui/styles/colors';
+
+const styles = {
+    textField: {
+        focusedUnderline: {
+            borderBottom: `1px solid ${colors.grey800}`
+        },
+        floatingLabelFocusStyle: {
+            color: colors.grey400
+        },
+        error: {
+            color: colors.blueGrey200
+        }
+    },
+    raisedButton: {
+        display: 'block',
+        marginTop: '20px'
+    }
+
+}
+
+const msg = {
+    errorFieldRequired: "This field is required",
+    errorEmailNotValid: "Email is not valid"
+}
 
 class Home extends React.Component {
 
@@ -14,11 +41,22 @@ class Home extends React.Component {
 
         this.state = {
             user: '',
-            password: ''
+            password: '',
+            snackbarOpen: false
         };
     }
 
-    componentDidMount() {}
+    componentWillReceiveProps(nextProps) {
+       if (nextProps.app.error) {
+           this.setState({
+               snackbarOpen: true
+           })
+       }
+    }
+
+    handleSubmit = () => {
+        this.props.login(this.state.user, this.state.password)
+    }
 
     handleTextChange = event => {
         this.setState({
@@ -26,23 +64,16 @@ class Home extends React.Component {
         });
     }
 
+    handleSnackbarRequestClose = () => {
+        this.setState({
+            snackbarOpen: false,
+        });
+    };
+
     render() {
 
-        const styles = {
-            textField: {
-                focusedUnderline: {
-                    borderBottom: '1px solid #3A3F45'
-                },
-                floatingLabelFocusStyle: {
-                    color: '#BFC0C4'
-                }
-            },
-            raisedButton: {
-                display: 'block',
-                marginTop: '20px'
-            }
+        const {errorMessage} = this.props.app;
 
-        }
         return (
             <CSSTransitionGroup
                 transitionName="initial"
@@ -62,35 +93,59 @@ class Home extends React.Component {
                     <div className='home_login_form'>
                         <div className='login_form_container'>
                             <h1>Please Log In</h1>
-                            <TextField
-                                id="user"
-                                hintText="yourname@email.com"
-                                floatingLabelText="Username"
-                                onChange={this.handleTextChange}
-                                underlineFocusStyle={styles.textField.focusedUnderline}
-                                floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
-                            />
-                            <br/>
-                            <TextField
-                                id="password"
-                                hintText="Your super secret password"
-                                floatingLabelText="Password"
-                                onChange={this.handleTextChange}
-                                type="password"
-                                underlineFocusStyle={styles.textField.focusedUnderline}
-                                floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
-                            />
-                            <RaisedButton
-                                label="Log In"
-                                primary={true}
-                                onClick={() => this.props.login(this.state.user, this.state.password)}
-                                style={styles.raisedButton}
-                                buttonStyle={{background: '#151922'}}
-                            />
+                            <ValidatorForm
+                                name="loginForm"
+                                ref="form"
+                                onSubmit={this.handleSubmit}
+                            >
+                                <TextValidator
+                                    id="user"
+                                    name="user"
+                                    value={this.state.user}
+                                    hintText="yourname@email.com"
+                                    floatingLabelText="Email"
+                                    onChange={this.handleTextChange}
+                                    underlineFocusStyle={styles.textField.focusedUnderline}
+                                    floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
+                                    fullWidth={true}
+                                    validators={['required', 'isEmail']}
+                                    errorMessages={[msg.errorFieldRequired, msg.errorEmailNotValid]}
+                                    errorStyle={styles.textField.error}
+                                />
+                                <br/>
+                                <TextValidator
+                                    id="password"
+                                    name="password"
+                                    value={this.state.password}
+                                    hintText="Your super secret password"
+                                    floatingLabelText="Password"
+                                    onChange={this.handleTextChange}
+                                    type="password"
+                                    validators={['required']}
+                                    errorMessages={[msg.errorFieldRequired]}
+                                    underlineFocusStyle={styles.textField.focusedUnderline}
+                                    floatingLabelFocusStyle={styles.textField.floatingLabelFocusStyle}
+                                    fullWidth={true}
+                                    errorStyle={styles.textField.error}
+                                />
+                                <RaisedButton
+                                    label="Log In"
+                                    type="submit"
+                                    primary={true}
+                                    style={styles.raisedButton}
+                                    buttonStyle={{background: '#151922'}}
+                                />
+                            </ValidatorForm>
                         </div>
 
                     </div>
                 </section>
+                <Snackbar
+                    open={this.state.snackbarOpen}
+                    message={errorMessage || ''}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleSnackbarRequestClose}
+                />
             </div>
             </CSSTransitionGroup>
         );
@@ -98,6 +153,7 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => ({
+    app: state.app
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
